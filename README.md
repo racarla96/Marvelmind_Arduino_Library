@@ -1,5 +1,5 @@
 # Marvelmind Arduino Library
-Based on [https://github.com/MarvelmindRobotics/marvelmind.c](Marvelmind C library).
+Based on [Marvelmind C library](https://github.com/MarvelmindRobotics/marvelmind.c).
 ## About the library
 Marvelmind Arduino Library library provides an example of building the system for receiving coordinates from Marvelmind mobile beacons via hardware serial port for Arduino.
 ## How it works
@@ -23,4 +23,4 @@ The example is easy, begin for initialize the library and the you need to run re
 - void printQualityFromMarvelmindHedge(bool onlyNew);
 
 ## Note
-Any errors or grammatical errors please notify my email, thank you.
+Any errors or grammatical errors please notify my email, thank you. racarla96@gmail.com
