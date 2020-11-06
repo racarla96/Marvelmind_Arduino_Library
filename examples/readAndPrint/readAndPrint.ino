@@ -1,4 +1,4 @@
-#include <marvelmind.h>
+#include <Marvelmind.h>
 
 MarvelmindHedge hedge;
 
@@ -16,11 +16,11 @@ void loop() {
   if(millis() - t1 > period){
 //    hedge.printPositionFromMarvelmindHedge(true);
 //    hedge.printStationaryBeaconsPositionsFromMarvelmindHedge(true);
-//    hedge.printRawDistancesFromMarvelmindHedge(true);  
+//    hedge.printRawDistancesFromMarvelmindHedge(true);
 //    hedge.printRawIMUFromMarvelmindHedge(true);
-    hedge.printFusionIMUFromMarvelmindHedge(true);    
-    hedge.printTelemetryFromMarvelmindHedge(true);
-//    hedge.printQualityFromMarvelmindHedge(true);  
-    t1 = millis(); 
+    hedge.printFusionIMUFromMarvelmindHedge(true);
+//    hedge.printTelemetryFromMarvelmindHedge(true);
+//    hedge.printQualityFromMarvelmindHedge(true);
+    t1 = millis();
   }
 }
