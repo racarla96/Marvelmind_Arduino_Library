@@ -143,8 +143,8 @@ public:
 class MarvelmindHedge
 {
 public:
-    void begin(HardwareSerial *serial, long baudrate);
-    void begin(HardwareSerial *serial, long baudrate, Serial_ *serialDebug, long debug_baudrate);
+    void begin(Stream *serial);
+    void begin(Stream *serial, Stream *serialDebug);
 
     void read();
 
@@ -191,9 +191,9 @@ private:
     bool haveNewValues_;
 
     // Additional arduino
-    HardwareSerial *serialRX;
+    Stream *serialRX;
     bool debug = false;
-    Serial_ *serialDebug;
+    Stream *serialDebug;
 
     uint16_t CalcCrcModbus_(uint8_t *buf, int len);
 

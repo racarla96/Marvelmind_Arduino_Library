@@ -1,10 +1,9 @@
 #include "marvelmind.h"
 
-void MarvelmindHedge::begin(HardwareSerial *serial, long baudrate)
+void MarvelmindHedge::begin(Stream *serial)
 {
 
     this->serialRX = serial;
-    this->serialRX->begin(baudrate);
 
     for (int i = 0; i < MESSAGE_BUFFER_SIZE; i++)
         input_buffer[i] = 0;
@@ -94,14 +93,13 @@ void MarvelmindHedge::begin(HardwareSerial *serial, long baudrate)
     quality.updated = 0;
 }
 
-void MarvelmindHedge::begin(HardwareSerial *serial, long baudrate, Serial_ *serialDebug, long debug_baudrate)
+void MarvelmindHedge::begin(Stream *serial, Stream *serialDebug)
 {
 
     this->debug = true;
     this->serialDebug = serialDebug;
-    this->serialDebug->begin(debug_baudrate);
 
-    this->begin(serial, baudrate);
+    this->begin(serial);
 }
 
 void MarvelmindHedge::read()
@@ -724,7 +722,7 @@ void MarvelmindHedge::printPositionFromMarvelmindHedge(bool onlyNew)
                 if (position.ready)
                 {
                     int precision = 2;
-                    
+
                     if (position.highResolution) precision = 3;
 
                     this->serialDebug->print("Address: ");
@@ -920,14 +918,14 @@ void MarvelmindHedge::printFusionIMUFromMarvelmindHedge(bool onlyNew)
             sprintf(print_buffer, "IMU fusion: Timestamp: %08d,", (int)fusionIMU.timestamp);
             this->serialDebug->print(print_buffer);
 
-            this->serialDebug->print("  X=");            
+            this->serialDebug->print("  X=");
             this->serialDebug->print(x_m, 3);
             this->serialDebug->print("  Y=");
             this->serialDebug->print(y_m, 3);
             this->serialDebug->print("  Z=");
             this->serialDebug->print(z_m, 3);
 
-            this->serialDebug->print("  q=");            
+            this->serialDebug->print("  q=");
             this->serialDebug->print(qw, 3);
             this->serialDebug->print(",");
             this->serialDebug->print(qx, 3);
@@ -936,14 +934,14 @@ void MarvelmindHedge::printFusionIMUFromMarvelmindHedge(bool onlyNew)
             this->serialDebug->print(",");
             this->serialDebug->print(qz, 3);
 
-            this->serialDebug->print("  v=");            
+            this->serialDebug->print("  v=");
             this->serialDebug->print(vx, 3);
             this->serialDebug->print(",");
             this->serialDebug->print(vy, 3);
             this->serialDebug->print(",");
             this->serialDebug->print(vz, 3);
 
-            this->serialDebug->print("  a=");            
+            this->serialDebug->print("  a=");
             this->serialDebug->print(ax, 3);
             this->serialDebug->print(",");
             this->serialDebug->print(ay, 3);
@@ -976,13 +974,13 @@ void MarvelmindHedge::printTelemetryFromMarvelmindHedge(bool onlyNew)
 
         if (telemetry.updated || (!onlyNew))
         {
-            sprintf(print_buffer, "Telemetry: Vbat= ");    
+            sprintf(print_buffer, "Telemetry: Vbat= ");
             this->serialDebug->print(print_buffer);
-            
+
             float v_bat = ((float) telemetry.vbat_mv) / 1000.0f;
             this->serialDebug->print(v_bat, 3);
 
-            sprintf(print_buffer, " V,    RSSI= %d dBm \n", (int)telemetry.rssi_dbm);    
+            sprintf(print_buffer, " V,    RSSI= %d dBm \n", (int)telemetry.rssi_dbm);
             this->serialDebug->print(print_buffer);
 
             this->telemetry.updated = false;

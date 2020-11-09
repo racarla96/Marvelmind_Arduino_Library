@@ -7,7 +7,10 @@ const unsigned long period = 1000;
 long baudrate = 115200;
 
 void setup() {
-  hedge.begin(&Serial1, baudrate, &Serial, baudrate);
+  Serial.begin(baudrate);
+  Serial1.begin(baudrate);
+
+  hedge.begin(&Serial1, &Serial);
   t1 = millis();
 }
 
