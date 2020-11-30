@@ -1014,3 +1014,146 @@ void MarvelmindHedge::printQualityFromMarvelmindHedge(bool onlyNew)
         }
     }
 }
+
+/////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////
+// Get average position coordinates
+// onlyNew: print only new positions
+//////////////////////////////////////////////////////////////////////////////
+bool MarvelmindHedge::getPositionFromMarvelmindHedge(bool onlyNew, PositionValuePro *positionValuePro)
+{
+    if (this->haveNewValues_ || (!onlyNew))
+    {
+        uint8_t i, j;
+        PositionValue position;
+        uint8_t addresses[MAX_BUFFERED_POSITIONS];
+        uint8_t addressesNum = 0;
+
+        for (i = 0; i < MAX_BUFFERED_POSITIONS; i++)
+        {
+            uint8_t address = this->positionBuffer[i].address;
+            bool alreadyProcessed = false;
+            if (addressesNum != 0)
+                for (j = 0; j < addressesNum; j++)
+                {
+                    if (address == addresses[j])
+                    {
+                        alreadyProcessed = true;
+                        break;
+                    }
+                }
+            if (alreadyProcessed)
+                continue;
+            addresses[addressesNum++] = address;
+
+            this->getPositionFromMarvelmindHedgeByAddress(&position, address);
+
+            positionValuePro->x = ((float)position.x) / 1000.0f;
+            positionValuePro->y = ((float)position.y) / 1000.0f;
+            positionValuePro->z = ((float)position.z) / 1000.0f;
+
+            positionValuePro->angle = position.angle;
+
+            this->haveNewValues_ = false;
+        }
+        return true;
+    }
+    return false;
+}
+
+bool MarvelmindHedge::getRawDistancesFromMarvelmindHedge(bool onlyNew, RawDistancesPro *rawDistancesPro)
+{
+
+    RawDistances rawDistances;
+    this->getRawDistancesFromMarvelmindHedge(&rawDistances);
+
+    if (rawDistances.updated || (!onlyNew))
+    {
+        uint8_t i, j, id;
+        float d_m;
+
+        if(!rawDistancesPro->sorted) {
+            rawDistancesPro->address_hedge = rawDistances.address_hedge;
+
+            uint8_t max_id_sorted = 0;
+            for (j = 0; j < 4; j++) {
+                id = 0;
+                uint8_t min_id = 255;
+                for (i = 0; i < 4; i++) {
+                    if(rawDistances.distances[i].address_beacon < min_id &&
+                    rawDistances.distances[i].address_beacon > max_id_sorted) {
+                        min_id = rawDistances.distances[i].address_beacon;
+                        id = i;
+                    }
+                }
+                max_id_sorted = rawDistances.distances[id].address_beacon;
+                rawDistancesPro->translate_beacons[j] = id;
+                rawDistancesPro->address_beacons[j] = rawDistances.distances[id].address_beacon;
+            }        
+            rawDistancesPro->sorted = true;
+        }
+
+        for (i = 0; i < 4; i++)
+        {
+            id = rawDistancesPro->translate_beacons[i];
+            if (rawDistances.distances[id].address_beacon != 0)
+            { 
+                rawDistancesPro->distances[i] = ((float) rawDistances.distances[id].distance) / 1000.0f;  
+            }
+        }
+
+        this->rawDistances.updated = false;
+
+        return true;
+    }
+    return false;
+}
+
+bool MarvelmindHedge::getRawIMUFromMarvelmindHedge(bool onlyNew, RawIMUValue *rawIMU){
+
+    this->getRawIMUFromMarvelmindHedge(rawIMU);
+
+    if (rawIMU->updated || (!onlyNew))
+    {
+        this->rawIMU.updated = false;
+        return true;
+    }
+    return false;
+}
+
+bool MarvelmindHedge::getFusionIMUFromMarvelmindHedge(bool onlyNew, FusionIMUValuePro *fusionIMUValuePro){
+
+    FusionIMUValue fusionIMU;
+
+    this->getFusionIMUFromMarvelmindHedge(&fusionIMU);
+
+    if (fusionIMU.updated || (!onlyNew))
+    {
+        fusionIMUValuePro->x = ((float) fusionIMU.x) / 1000.0f;
+        fusionIMUValuePro->y = ((float) fusionIMU.y) / 1000.0f;
+        fusionIMUValuePro->z = ((float) fusionIMU.z) / 1000.0f;
+
+        float qw = ((float) fusionIMU.qw) / 10000.0f;
+        float qx = ((float) fusionIMU.qx) / 10000.0f;
+        float qy = ((float) fusionIMU.qy) / 10000.0f;
+        float qz = ((float) fusionIMU.qz) / 10000.0f;
+
+        fusionIMUValuePro->yaw = atan2(2.0*(qy*qz + qw*qx), qw*qw - qx*qx - qy*qy + qz*qz);
+        fusionIMUValuePro->pitch = asin(-2.0*(qx*qz - qw*qy));
+        fusionIMUValuePro->roll = atan2(2.0*(qx*qy + qw*qz), qw*qw + qx*qx - qy*qy - qz*qz);
+
+        fusionIMUValuePro->vx = ((float) fusionIMU.vx) / 1000.0f;
+        fusionIMUValuePro->vy = ((float) fusionIMU.vy) / 1000.0f;
+        fusionIMUValuePro->vz = ((float) fusionIMU.vz) / 1000.0f;
+
+        fusionIMUValuePro->ax = ((float) fusionIMU.ax) / 1000.0f;
+        fusionIMUValuePro->ay = ((float) fusionIMU.ay) / 1000.0f;
+        fusionIMUValuePro->az = ((float) fusionIMU.az) / 1000.0f;
+
+        this->fusionIMU.updated = false;
+
+        return true;
+    }
+    return false;
+}

@@ -3,7 +3,7 @@
 #include "Arduino.h"
 
 // THIS DEFINES CAN BE TUNE
-#define MAX_BUFFERED_POSITIONS 3
+#define MAX_BUFFERED_POSITIONS 1
 #define MAX_STATIONARY_BEACONS 30
 #define MESSAGE_BUFFER_SIZE 256
 
@@ -140,6 +140,45 @@ public:
     bool updated;
 };
 
+//////////////////////////////////////////////////////////////////////////////
+class PositionValuePro
+{
+public:
+    float x, y, z; // coordinates in meters
+    float angle;
+};
+
+class RawDistancesPro
+{
+public:
+    uint8_t address_hedge;
+    float distances[NDISTANCES]; // distance in meters 
+    uint8_t translate_beacons[NDISTANCES]; // Sorted from lowest to high address beacon
+    uint8_t address_beacons[NDISTANCES]; // Sorted from lowest to high address beacon
+    bool sorted = false;
+};
+
+class FusionIMUValuePro
+{
+public:
+    float x;
+    float y;
+    float z; // coordinates in meters
+
+    float roll;
+    float pitch;
+    float yaw; // euler angles in radians
+
+    float vx;
+    float vy;
+    float vz; // velocity, m/s
+
+    float ax;
+    float ay;
+    float az; // acceleration, m/s^2
+};
+//////////////////////////////////////////////////////////////////////////////
+
 class MarvelmindHedge
 {
 public:
@@ -164,6 +203,11 @@ public:
     void printFusionIMUFromMarvelmindHedge(bool onlyNew);
     void printTelemetryFromMarvelmindHedge(bool onlyNew);
     void printQualityFromMarvelmindHedge(bool onlyNew);
+
+    bool getPositionFromMarvelmindHedge(bool onlyNew, PositionValuePro *positionValuePro);
+    bool getRawDistancesFromMarvelmindHedge(bool onlyNew, RawDistancesPro *rawDistancesPro);
+    bool getRawIMUFromMarvelmindHedge(bool onlyNew, RawIMUValue *rawIMU);
+    bool getFusionIMUFromMarvelmindHedge(bool onlyNew, FusionIMUValuePro *fusionIMUValuePro);
 private:
     char print_buffer [128]; // must be large enough for your whole string!
 
