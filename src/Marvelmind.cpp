@@ -1139,9 +1139,9 @@ bool MarvelmindHedge::getFusionIMUFromMarvelmindHedge(bool onlyNew, FusionIMUVal
         float qy = ((float) fusionIMU.qy) / 10000.0f;
         float qz = ((float) fusionIMU.qz) / 10000.0f;
 
-        fusionIMUValuePro->yaw = atan2(2.0*(qy*qz + qw*qx), qw*qw - qx*qx - qy*qy + qz*qz);
+        fusionIMUValuePro->roll = atan2(2.0*(qy*qz + qw*qx), qw*qw - qx*qx - qy*qy + qz*qz);
         fusionIMUValuePro->pitch = asin(-2.0*(qx*qz - qw*qy));
-        fusionIMUValuePro->roll = atan2(2.0*(qx*qy + qw*qz), qw*qw + qx*qx - qy*qy - qz*qz);
+        fusionIMUValuePro->yaw = atan2(2.0*(qx*qy + qw*qz), qw*qw + qx*qx - qy*qy - qz*qz);
 
         fusionIMUValuePro->vx = ((float) fusionIMU.vx) / 1000.0f;
         fusionIMUValuePro->vy = ((float) fusionIMU.vy) / 1000.0f;
