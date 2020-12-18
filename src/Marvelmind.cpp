@@ -1122,6 +1122,30 @@ bool MarvelmindHedge::getRawIMUFromMarvelmindHedge(bool onlyNew, RawIMUValue *ra
     return false;
 }
 
+bool MarvelmindHedge::getRawIMUFromMarvelmindHedge(bool onlyNew, RawIMUValuePro *rawIMUPro){
+
+    RawIMUValue rawIMU;
+    this->getRawIMUFromMarvelmindHedge(&rawIMU);
+
+    if (rawIMU->updated || (!onlyNew))
+    {
+        rawIMU.acc_x = ((float) rawIMU.acc_x) * cfAcc;
+        rawIMU.acc_y = ((float) rawIMU.acc_y) * cfAcc;
+        rawIMU.acc_z = ((float) rawIMU.acc_z) * cfAcc;
+
+        rawIMU.gyro_x = ((float) rawIMU.gyro_x) * cfGyro;
+        rawIMU.gyro_y = ((float) rawIMU.gyro_y) * cfGyro;
+        rawIMU.gyro_z = ((float) rawIMU.gyro_z) * cfGyro;
+
+        rawIMU.compass_x = ((float) rawIMU.compass_x) * cfMagXY;
+        rawIMU.compass_y = ((float) rawIMU.compass_y) * cfMagXY;
+        rawIMU.compass_z = ((float) rawIMU.compass_z) * cfMagZ;
+
+        return true;
+    }
+    return false;
+}
+
 bool MarvelmindHedge::getFusionIMUFromMarvelmindHedge(bool onlyNew, FusionIMUValuePro *fusionIMUValuePro){
 
     FusionIMUValue fusionIMU;

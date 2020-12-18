@@ -177,6 +177,31 @@ public:
     float ay;
     float az; // acceleration, m/s^2
 };
+
+const float g = 9.80665f; // m/s2
+const float cfAcc = 0.001f * g; // mg (g - gravity earth unit value 1g = 9.8 m/s^2)
+const float d2r = (PI / 180.0f); // degrees to radians
+const float r2d = (180.0f / PI ); // radians to degrees  
+const float cfGyro = 0.0175f * d2r; // conversion factor to dps (degrees per second) -> radians
+const float g2t = 0.0001f; // 1 gauss = 0.0001 tesla
+const float cfMagXY = (1/980) * g2t * 1000000.0f; // 1 Tesla [T] = 1 000 000 Microtesla [µT]
+const float cfMagZ  = (1/1100) * g2t * 1000000.0f;
+
+class RawIMUValuePro
+{
+public:
+    float acc_x; // m/s^2
+    float acc_y; // m/s^2
+    float acc_z; // m/s^2
+
+    float gyro_x; // rad/s
+    float gyro_y; // rad/s
+    float gyro_z; // rad/s
+
+    float compass_x; // µT
+    float compass_y; // µT
+    float compass_z; // µT
+};
 //////////////////////////////////////////////////////////////////////////////
 
 class MarvelmindHedge
@@ -207,6 +232,7 @@ public:
     bool getPositionFromMarvelmindHedge(bool onlyNew, PositionValuePro *positionValuePro);
     bool getRawDistancesFromMarvelmindHedge(bool onlyNew, RawDistancesPro *rawDistancesPro);
     bool getRawIMUFromMarvelmindHedge(bool onlyNew, RawIMUValue *rawIMU);
+    bool getRawIMUFromMarvelmindHedge(bool onlyNew, RawIMUValuePro *rawIMUPro);
     bool getFusionIMUFromMarvelmindHedge(bool onlyNew, FusionIMUValuePro *fusionIMUValuePro);
 private:
     char print_buffer [128]; // must be large enough for your whole string!
