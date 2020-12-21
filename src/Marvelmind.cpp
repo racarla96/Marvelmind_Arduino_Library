@@ -1127,7 +1127,7 @@ bool MarvelmindHedge::getRawIMUFromMarvelmindHedge(bool onlyNew, RawIMUValuePro 
     RawIMUValue rawIMU;
     this->getRawIMUFromMarvelmindHedge(&rawIMU);
 
-    if (rawIMU->updated || (!onlyNew))
+    if (rawIMU.updated || (!onlyNew))
     {
         rawIMU.acc_x = ((float) rawIMU.acc_x) * cfAcc;
         rawIMU.acc_y = ((float) rawIMU.acc_y) * cfAcc;
